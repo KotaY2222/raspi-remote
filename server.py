@@ -344,10 +344,40 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"ok": False, "error": "JSON が読めません"}, 400)
 
 
+def make_server(host, port, tries=10):
+    """指定の番号が使えないとき(他のプログラムが使用中など)は、次の番号を順に試す。"""
+    for p in range(port, port + tries):
+        try:
+            return ThreadingHTTPServer((host, p), Handler), p
+        except OSError:
+            print(f"[server] {p} 番は使えないため、次の番号を試します", flush=True)
+    raise SystemExit(f"{port}〜{port + tries - 1} 番がすべて使えません。--port で別の番号を指定してください")
+
+
+def reset_state():
+    """機器の状態を初期値に戻す(デモを毎回同じ状態から始めるため)。"""
+    with LOCK:
+        STATE.clear()
+        STATE.update(json.loads(json.dumps(DEFAULT_STATE)))
+        save_state(STATE)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--host", default="0.0.0.0")  # 自宅Wi-Fi内の端末から開けるように
+    ap.add_argument("--host", default="0.0.0.0")  # 自宅Wi-Fi内の端末から開けるように。このPCだけで使うなら 127.0.0.1
     ap.add_argument("--port", type=int, default=8080)
+    ap.add_argument("--reset", action="store_true", help="起動時に、機器の状態を初期値に戻す")
+    ap.add_argument("--open", action="store_true", help="起動したら、ブラウザで画面を開く")
     args = ap.parse_args()
-    print(f"http://{args.host}:{args.port}  (赤外線はダミー送信)")
-    ThreadingHTTPServer((args.host, args.port), Handler).serve_forever()
+    if args.reset:
+        reset_state()
+    httpd, port = make_server(args.host, args.port)
+    url = f"http://127.0.0.1:{port}"
+    print(f"{url}  (赤外線はダミー送信)  終了するには、このウィンドウを閉じるか Ctrl+C", flush=True)
+    if args.open:
+        import webbrowser
+        webbrowser.open(url)  # 待ち受けは始まっているので、開くのが先でも接続は待たされるだけ
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\n終了します")

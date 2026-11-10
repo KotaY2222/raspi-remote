@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4f5f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c0e14" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="リモコン">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+<title>おうちリモコン</title>
+</head>
+<body>
+<main id="app" class="loading">
+  <header class="top">
+    <div>
+      <p class="eyebrow" id="today"></p>
+      <h1>おうちリモコン</h1>
+      <span class="demo-pill" id="demo" hidden>デモ: 赤外線はダミー送信</span>
+    </div>
+    <span class="conn" id="conn" role="status"><i></i><b>接続中</b></span>
+  </header>
+
+  <section class="wx" id="wx" aria-label="外の気温と湿度"></section>
+
+  <section class="scenes" id="scenes" aria-label="シーン"></section>
+
+  <section class="card ai" id="card-ai" aria-label="話しかけて操作">
+    <div class="card-head">
+      <div class="card-title">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4L12 3zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/></svg></span>
+        <div><h2>話しかけて操作</h2><p id="ai-engine">読み込み中</p></div>
+      </div>
+    </div>
+    <form class="ai-form" id="ai-form" autocomplete="off">
+      <input id="ai-input" type="text" maxlength="200" placeholder="例: 暑いから冷房つけて" enterkeyhint="send" aria-label="話しかける内容">
+      <button type="submit" id="ai-send">送る</button>
+    </form>
+    <div class="ai-chips" id="ai-chips"></div>
+    <p class="ai-result" id="ai-result" role="status"></p>
+  </section>
+
+  <section class="card ac" id="card-aircon" aria-label="エアコン"></section>
+  <section class="card light" id="card-light" aria-label="照明"></section>
+  <section class="card tv" id="card-tv" aria-label="テレビ"></section>
+
+  <section class="card log" id="card-log" aria-label="送信ログ" hidden></section>
+
+  <p class="foot">エアコンの表示は、このアプリが最後に送った設定です。付属リモコンで操作した場合は「再送」で合わせ直せます。</p>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script src="/app.js"></script>
+</body>
+</html>

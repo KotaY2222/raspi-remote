@@ -13,22 +13,22 @@
   --danger: #e5484d;
   --tint: var(--accent);
   --radius: 26px;
-  color-scheme: light dark;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0c0e14;
-    --bg-glow: radial-gradient(80% 50% at 50% -10%, #1b2447 0%, transparent 70%);
-    --surface: #151925;
-    --surface-2: #1d2231;
-    --text: #eef0f6;
-    --muted: #98a0b3;
-    --line: rgba(255, 255, 255, .07);
-    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 14px 34px -14px rgba(0, 0, 0, .7);
-    --accent: #6f93ff;
-    --accent-ink: #0c0e14;
-    --on: #3ddc97;
-  }
+/* ライト/ダークは、画面右上のボタンで切り替える(html の data-theme を JS が設定する) */
+:root[data-theme="dark"] {
+  --bg: #0c0e14;
+  --bg-glow: radial-gradient(80% 50% at 50% -10%, #1b2447 0%, transparent 70%);
+  --surface: #151925;
+  --surface-2: #1d2231;
+  --text: #eef0f6;
+  --muted: #98a0b3;
+  --line: rgba(255, 255, 255, .07);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 14px 34px -14px rgba(0, 0, 0, .7);
+  --accent: #6f93ff;
+  --accent-ink: #0c0e14;
+  --on: #3ddc97;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -57,6 +57,13 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .top { display: flex; justify-content: space-between; align-items: flex-end; padding: 4px 4px 0; }
 .eyebrow { margin: 0; font-size: 13px; color: var(--muted); letter-spacing: .04em; }
 h1 { margin: 2px 0 0; font-size: 28px; letter-spacing: -.01em; }
+.top-r { display: grid; justify-items: end; gap: 8px; }
+.theme-btn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); box-shadow: var(--shadow); border: 1px solid var(--line); color: var(--text); transition: transform .15s, background .2s; }
+.theme-btn:active { transform: scale(.92); }
+.theme-btn svg { width: 20px; height: 20px; }
+.theme-btn .i-sun { display: none; }
+:root[data-theme="dark"] .theme-btn .i-sun { display: block; }
+:root[data-theme="dark"] .theme-btn .i-moon { display: none; }
 .conn { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 99px; background: var(--surface); box-shadow: var(--shadow); font-size: 12px; color: var(--muted); }
 .conn i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
 .conn.ok i { background: var(--on); box-shadow: 0 0 0 4px color-mix(in srgb, var(--on) 25%, transparent); }

@@ -229,6 +229,32 @@ document.addEventListener("change", (e) => {
   if (e.target.id === "level") commandSoon("light", { level: Number(e.target.value), power: true }, 0);
 });
 
+// 表示の切り替え(ライト/ダーク)。選んだ内容はこの端末のブラウザに覚えさせる
+const THEME_COLOR = { light: "#f4f5f8", dark: "#0c0e14" };
+
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  $("theme-color").setAttribute("content", THEME_COLOR[t]);
+  const btn = $("theme");
+  btn.setAttribute("aria-pressed", t === "dark");
+  btn.setAttribute("aria-label", t === "dark" ? "ライト表示に切り替える" : "ダーク表示に切り替える");
+}
+
+function savedTheme() {
+  try { return localStorage.getItem("theme"); } catch { return null; }
+}
+
+applyTheme(document.documentElement.dataset.theme);
+$("theme").addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  try { localStorage.setItem("theme", next); } catch { /* 保存できなくても切り替えは効く */ }
+  applyTheme(next);
+});
+// まだボタンで選んでいない間は、端末の設定が変わったら追従する
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+  if (!savedTheme()) applyTheme(e.matches ? "dark" : "light");
+});
+
 // 話しかけて操作(音声は、iPhoneのキーボードのマイクで入力できる)
 const AI_EXAMPLES = ["暑いから冷房つけて", "電気を消して", "もう寝るよ", "24度の暖房にして"];
 
